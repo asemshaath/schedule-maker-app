@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context=".EventForm">
+
+    <TextView
+        android:id="@+id/tvEventForm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="Add New Event"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center"
+        android:hint="Title"
+        android:padding="1dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvEventForm" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/cgDaysChecked"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etTitle"
+        app:selectionRequired="true"
+        app:singleSelection="false">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/monday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Monday" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/tuesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Tuesday" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/wednesday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Wednesday" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/thursday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Thursday" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/friday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Friday" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/saturday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Saturday" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/sunday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="Sunday" />
+
+
+    </com.google.android.material.chip.ChipGroup>
+
+
+    <LinearLayout
+        android:id="@+id/startTimeForm"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="55dp"
+        app:layout_constraintTop_toBottomOf="@+id/cgDaysChecked"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:text="Start"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            />
+
+        <EditText
+            android:id="@+id/etStartTimeP1"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="8"
+            android:inputType="time"
+            android:maxLength="2"
+            android:textAlignment="center"
+            android:textSize="14dp"
+            tools:layout_editor_absoluteX="44dp"
+            tools:layout_editor_absoluteY="250dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text=":"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            />
+
+        <EditText
+            android:id="@+id/etStartTimeP2"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="00"
+            android:inputType="time"
+            android:maxLength="2"
+            android:textAlignment="center"
+            android:textSize="14dp"
+            tools:layout_editor_absoluteX="150dp"
+            tools:layout_editor_absoluteY="250dp" />
+
+<!--        <Switch-->
+<!--            android:id="@+id/startTimeSwitch"-->
+<!--            android:layout_width="5dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:showText="true"-->
+<!--            android:layout_alignParentLeft="true"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_alignParentTop="true"-->
+<!--            android:textOff="AM"-->
+<!--            android:textOn="PM"-->
+<!--            android:switchPadding="-90dp"-->
+<!--            tools:ignore="UseSwitchCompatOrMaterialXml" />-->
+
+        <androidx.appcompat.widget.AppCompatToggleButton
+            android:id="@+id/StartTimeToggle"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:textOn="AM"
+            android:textOff="PM"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@+id/startTimeForm">
+
+
+        <TextView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:text="End"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEndTimeP1"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="11"
+            android:inputType="time"
+            android:maxLength="2"
+            android:textAlignment="center"
+            android:textSize="14dp"
+            tools:layout_editor_absoluteX="44dp"
+            tools:layout_editor_absoluteY="250dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:text=":"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etEndTimeP2"
+            android:layout_width="35dp"
+            android:layout_height="match_parent"
+            android:ems="10"
+            android:hint="00"
+            android:inputType="time"
+            android:maxLength="2"
+            android:textAlignment="center"
+            android:textSize="14dp"
+            tools:layout_editor_absoluteX="150dp"
+            tools:layout_editor_absoluteY="250dp" />
+
+        <androidx.appcompat.widget.AppCompatToggleButton
+            android:id="@+id/EndTimeToggle"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:textOff="PM"
+            android:textOn="AM" />
+
+    </LinearLayout>
+
+
+    <EditText
+        android:id="@+id/etDescribtion"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:paddingTop="4dp"
+        android:gravity="top"
+        android:inputType="text|textMultiLine"
+        android:hint="Enter Describtion"
+        android:background="@drawable/back"
+
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etDescribtion">
+
+        <EditText
+            android:id="@+id/etLocation"
+            android:layout_width="120dp"
+            android:layout_height="match_parent"
+            android:hint="Location"
+            tools:layout_editor_absoluteX="143dp"
+            tools:layout_editor_absoluteY="506dp" />
+
+        <Button
+            android:id="@+id/addEventBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Event" />
+
+        <Button
+            android:id="@+id/viewSchBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Schedule" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
