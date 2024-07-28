@@ -107,8 +107,14 @@ class EventForm : AppCompatActivity() {
         EventRepository.incrementCounter()
 
         // add event to the repo
+        Log.d("RAND COLOR", "Printing the random color we generate")
+        Log.d("RAND COLOR", "$blockColor")
+        Log.d("RAND COLOR", "Random color printed")
+
+
         val event = Event(id, title, daysSelected, startTime, endTime, location, des, blockColor)
         EventRepository.addEvent(event)
+        Log.d("EVENTS ASEM", "$event")
 
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
