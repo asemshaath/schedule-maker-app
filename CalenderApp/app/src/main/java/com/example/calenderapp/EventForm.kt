@@ -100,7 +100,6 @@ class EventForm : AppCompatActivity() {
 
 
         Log.d("TEST", "Title is:$title")
-
         Log.d("TEST", "Start time is $startTime")
         println("try printing something")
         print(binding.etTitle)

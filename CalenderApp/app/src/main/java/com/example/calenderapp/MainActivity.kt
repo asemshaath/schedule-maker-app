@@ -37,8 +37,6 @@ class MainActivity : AppCompatActivity() {
         logoutBtn.setOnClickListener{logoutBtinClicked()}
         modifyScheduleBtn.setOnClickListener{modBtnClicked()}
 
-
-
     }
 
     override fun onResume() {
