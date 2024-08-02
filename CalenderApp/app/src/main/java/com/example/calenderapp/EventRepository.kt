@@ -56,7 +56,7 @@ object EventRepository {
     }
 
 
-    private fun doesOverlap(event: Event): Boolean {
+    fun doesOverlap(event: Event): Boolean {
         for (e in events){
             if (event.daysOfWeek.intersect(e.daysOfWeek).isNotEmpty() &&
                 (event.startTime <= e.endTime && event.endTime >= e.startTime)){
