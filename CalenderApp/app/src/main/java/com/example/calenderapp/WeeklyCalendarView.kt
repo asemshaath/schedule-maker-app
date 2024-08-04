@@ -60,7 +60,7 @@ class WeeklyCalendarView(context: Context, attrs: AttributeSet? = null) : View(c
                 val right = left + dayWidth
                 val bottom = (endHour * hourHeight).toFloat()
 
-                paint.color = event.color
+//                paint.color = event.color
                 canvas.drawRect(left, top, right, bottom, paint)
 
                 // Draw event title

@@ -4,7 +4,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:background="@drawable/list_border"
+    android:backgroundTint="#A3DCDCDC"
     android:padding="16dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <ImageButton
+                android:id="@+id/deleteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:padding="8dp"
+                android:src="@drawable/ic_close" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/eventTitle"
@@ -21,6 +40,13 @@
         android:text="Location"
         android:textSize="16sp" />
 
+    <TextView
+        android:id="@+id/eventTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time"
+        android:textSize="16sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,11 +61,5 @@
             android:backgroundTint="#045E22"
             android:text="Edit" />
 
-        <Button
-            android:id="@+id/deleteButton"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#BC0808"
-            android:text="X" />
     </LinearLayout>
 </LinearLayout>

@@ -11,6 +11,5 @@ data class Event(
     var startTime: LocalTime,
     var endTime: LocalTime,
     var location: String,
-    var description: String = "", // Optional description
-    var color: Int
+    var description: String = "" // Optional description
 )

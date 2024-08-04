@@ -31,9 +31,25 @@ class EventAdapter(
 
         val event = getItem(position)
 
+        val dayAbbreviations = mapOf(
+            "monday" to "M",
+            "tuesday" to "T",
+            "wednesday" to "W",
+            "thursday" to "R",
+            "friday" to "F",
+            "saturday" to "S",
+            "sunday" to "U"
+        )
+
+        val days = event.daysOfWeek.map { day ->
+
+            dayAbbreviations[day.toString().toLowerCase()] ?: ""  // Use the abbreviation, or "" if day is not found
+        }.joinToString("")
+
         // Use binding to set text and click listeners
         binding.eventTitle.text = event.title
-        binding.eventLocation.text = event.location
+        binding.eventLocation.text = "Location: ${event.location}"
+        binding.eventTime.text = "$days  ${event.startTime} - ${event.endTime}"
 
         binding.updateButton.setOnClickListener {
             showUpdateDialog(event)

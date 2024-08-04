@@ -15,7 +15,6 @@ import kotlin.random.Random
 class EventForm : AppCompatActivity() {
 
     private lateinit var binding: ActivityEventFormBinding
-//    val schedule = EventRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +29,7 @@ class EventForm : AppCompatActivity() {
     }
 
     private fun viewSch() {
+        // Will go to the main activity
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
@@ -61,20 +61,11 @@ class EventForm : AppCompatActivity() {
         }
     }
 
-    private fun getRandomColor(): Int {
-        val red = Random.nextInt(256)
-        val green = Random.nextInt(256)
-        val blue = Random.nextInt(256)
-        return (red shl 16) or (green shl 8) or blue
-    }
-
-
     private fun addEvent() {
         val title = binding.etTitle.text.toString()
         val des = binding.etDescribtion.text.toString()
         val location = binding.etLocation.text.toString()
         val id = EventRepository.generateId()
-        val blockColor = getRandomColor()
         val daysSelected = getDaysOfWeek()
 
         Log.i("TEST ADD EVENT", daysSelected.toString())
@@ -91,33 +82,30 @@ class EventForm : AppCompatActivity() {
 
         val formatter = DateTimeFormatter.ofPattern("h:mm a")
 
-        val startTimeStr  = binding.etStartTimeP1.text.toString() +  ":" +  binding.etStartTimeP2.text.toString() + " " + binding.StartTimeToggle.text
-        var endTimeStr  = binding.etEndTimeP1.text.toString() +  ":" +  binding.etEndTimeP2.text.toString() + " " + binding.StartTimeToggle.text
+        val startTimeStr  = binding.etStartTimeP1.text.toString() + ":" + "%02d".format(binding.etStartTimeP2.text.toString().toIntOrNull() ?: 0) + " " + binding.StartTimeToggle.text
+        val endTimeStr  = binding.etEndTimeP1.text.toString() + ":" + "%02d".format(binding.etEndTimeP2.text.toString().toIntOrNull() ?: 0) + " " + binding.EndTimeToggle.text
 
         val startTime = LocalTime.parse(startTimeStr, formatter)
         val endTime = LocalTime.parse(endTimeStr, formatter)
 
+        Log.d("TIME TEST", "Start Time User Input: $startTimeStr")
+        Log.d("TIME TEST", "Start Time Localtime: $startTime")
 
+        Log.d("TIME TEST", "End Time User Input: $endTimeStr")
+        Log.d("TIME TEST", "End Time Localtime: $endTime")
 
-        Log.d("TEST", "Title is:$title")
-        Log.d("TEST", "Start time is $startTime")
-        println("try printing something")
-        print(binding.etTitle)
-        print(startTime)
         EventRepository.incrementCounter()
 
         // add event to the repo
-        Log.d("RAND COLOR", "Printing the random color we generate")
-        Log.d("RAND COLOR", "$blockColor")
-        Log.d("RAND COLOR", "Random color printed")
+        val event = Event(id, title, daysSelected, startTime, endTime, location, des)
+
+        if(EventRepository.addEvent(event)){
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+
+        } else Toast.makeText(this, "Events Cannot Overlap",Toast.LENGTH_SHORT).show()
 
 
-        val event = Event(id, title, daysSelected, startTime, endTime, location, des, blockColor)
-        EventRepository.addEvent(event)
-        Log.d("EVENTS ASEM", "$event")
-
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }
