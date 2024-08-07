@@ -1,6 +1,7 @@
 package com.example.calenderapp
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import com.example.calenderapp.databinding.DialogUpdateEventBinding
 import com.example.calenderapp.databinding.EventListItemBinding
 
@@ -52,7 +55,12 @@ class EventAdapter(
         binding.eventTime.text = "$days  ${event.startTime} - ${event.endTime}"
 
         binding.updateButton.setOnClickListener {
-            showUpdateDialog(event)
+//            showUpdateDialog(event)
+
+            val intent = Intent(context, EventForm::class.java)
+            intent.putExtra("eventId", event.id)
+            context.startActivity(intent) // Make sure context is an Activity context or use context.startActivity(intent, null)
+
         }
 
         binding.deleteButton.setOnClickListener {

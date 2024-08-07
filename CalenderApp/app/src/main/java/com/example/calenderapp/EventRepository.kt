@@ -24,6 +24,11 @@ object EventRepository {
         return randomNumber
     }
 
+    fun getEvenById(eventId: Int): Event? {
+        val event = events.find { it.id == eventId }
+
+        return event
+    }
 
     fun incrementCounter(){
         counter++
