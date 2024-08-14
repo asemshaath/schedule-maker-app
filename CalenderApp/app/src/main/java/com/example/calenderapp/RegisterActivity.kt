@@ -63,6 +63,10 @@ class RegisterActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("FIREBASE", "createUserWithEmail:success")
                     Toast.makeText(this, "Signed Up Successfully", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(applicationContext, LoginActivity::class.java)
+                    startActivity(intent)
+                    finish()
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("FIREBASE", "createUserWithEmail:failure", task.exception)

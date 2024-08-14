@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        android:inputType="textPassword"
         android:hint="Password"
         app:layout_constraintTop_toBottomOf="@+id/etEmailRegister"
         tools:layout_editor_absoluteX="0dp" />
@@ -36,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:hint="Re Enter Password"
+        android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@+id/etPasswordRegister"
         tools:layout_editor_absoluteX="0dp" />
 
