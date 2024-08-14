@@ -37,14 +37,7 @@ class EventForm : AppCompatActivity() {
         }
 
 
-        addEventBtn.setOnClickListener {
-
-            addEvent(eventId)
-//            if (eventId == null)
-//                addEvent()
-//            else
-//                editEvent()
-        }
+        addEventBtn.setOnClickListener {modifyRepo(eventId)}
         viewSchBtn.setOnClickListener { viewSch() }
     }
 
@@ -68,6 +61,13 @@ class EventForm : AppCompatActivity() {
         binding.EndTimeToggle.setChecked(let { if (event.endTime.hour > 12) false else true })
 
         // Add days
+        binding.monday.isChecked = DayOfWeek.MONDAY in event.daysOfWeek
+        binding.tuesday.isChecked = DayOfWeek.TUESDAY in event.daysOfWeek
+        binding.wednesday.isChecked = DayOfWeek.WEDNESDAY in event.daysOfWeek
+        binding.thursday.isChecked = DayOfWeek.THURSDAY in event.daysOfWeek
+        binding.friday.isChecked = DayOfWeek.FRIDAY in event.daysOfWeek
+        binding.saturday.isChecked = DayOfWeek.SATURDAY in event.daysOfWeek
+        binding.sunday.isChecked = DayOfWeek.SUNDAY in event.daysOfWeek
 
         // Edit layout
         binding.addEventBtn.text = "Edit Event"
@@ -113,13 +113,13 @@ class EventForm : AppCompatActivity() {
         }
     }
 
-    private fun addEvent(eventId: Int?) {
+    private fun modifyRepo(eventId: Int?) {
         val title = binding.etTitle.text.toString()
         val des = binding.etDescribtion.text.toString()
         val location = binding.etLocation.text.toString()
         val id = let { if (eventId == null) EventRepository.generateId() else eventId}
         val daysSelected = getDaysOfWeek()
-//        val meth
+        val method = let { if (eventId == null) "ADD" else "UPDATE"}
 
         Log.i("TEST ADD EVENT", daysSelected.toString())
 
@@ -147,23 +147,28 @@ class EventForm : AppCompatActivity() {
         Log.d("TIME TEST", "End Time User Input: $endTimeStr")
         Log.d("TIME TEST", "End Time Localtime: $endTime")
 
-//        EventRepository.incrementCounter()
+        EventRepository.incrementCounter()
 
-        // add event to the repo
+        // new event
         val event = Event(id, title, daysSelected, startTime, endTime, location, des)
+        val methodRes = let{
+            if (method == "ADD")
+                EventRepository.addEvent(event)
+            else
+                EventRepository.updateEvent(event)
+        }
 
-        if(EventRepository.addEvent(event)){
+        if(methodRes){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-
-        } else Toast.makeText(this, "Events Cannot Overlap",Toast.LENGTH_SHORT).show()
+        } else if (!methodRes && method == "ADD")
+            Toast.makeText(this, "Events Cannot Overlap",Toast.LENGTH_SHORT).show()
+        else
+            Toast.makeText(this, "Failed to update event",Toast.LENGTH_SHORT).show()
 
 
     }
 
-    private fun editEvent() {
-        Log.d("EDIT EVENT", "EDIT EVENT TRIGGERED")
-    }
 
 }

@@ -3,6 +3,7 @@ package com.example.calenderapp
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.example.calenderapp.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -32,12 +33,12 @@ class MainActivity : AppCompatActivity() {
         val logoutBtn = binding.logoutBtn
         val modifyScheduleBtn = binding.modBtn
 
+        fetchEventsAndUpdateUI()
         eventAdapter.notifyDataSetChanged()
-        updateDisplay()
 
         auth = FirebaseAuth.getInstance()
         val user = auth.currentUser
-
+        Log.d("FIREBASE USERNAME FROM MAINACTIVITY", "${user?.email}")
 
         if (user == null){
             val intent = Intent(applicationContext, LoginActivity::class.java)
@@ -51,8 +52,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        fetchEventsAndUpdateUI()
         eventAdapter.notifyDataSetChanged()
-        updateDisplay()
     }
 
     private fun modBtnClicked() {
@@ -68,11 +69,23 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
-
-    private fun updateDisplay(){
-//        val eventsText = binding.tvEventsList
-
-//        counterText.text = EventRepository.counter.toString()
-//        eventsText.text = EventRepository.events.toString()
+    private fun fetchEventsAndUpdateUI() {
+        EventRepository.getEventsFromFirebase { events ->
+            runOnUiThread {
+                if (events.isNotEmpty()) {
+                    Log.d("MainActivity", "Retrieving Events From Firebase")
+//                    EventRepository.events.clear()
+//                    EventRepository.events.addAll(events)
+//                    eventAdapter.clear()
+//                    eventAdapter.addAll(events)
+                    eventAdapter.notifyDataSetChanged()
+                } else {
+                    Log.d("MainActivity", "No events found")
+                }
+            }
+        }
     }
+
+
+
 }
