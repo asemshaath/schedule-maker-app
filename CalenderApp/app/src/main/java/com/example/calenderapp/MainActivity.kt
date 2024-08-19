@@ -56,11 +56,6 @@ class MainActivity : AppCompatActivity() {
 
         logoutBtn.setOnClickListener{logoutBtinClicked()}
         modifyScheduleBtn.setOnClickListener{
-            val intent = Intent(this, Notification::class.java)
-            intent.putExtra(titleExtra, "Test Notification")
-            intent.putExtra(messageExtra, "This is a test notification")
-            sendBroadcast(intent)
-
             modBtnClicked()
         }
 

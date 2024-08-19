@@ -64,7 +64,7 @@ class EventAdapter(
         }
 
         binding.deleteButton.setOnClickListener {
-            if (EventRepository.deleteEvent(context, event)) {
+            if (EventRepository.deleteEvent(event)) {
                 events.remove(event)
                 notifyDataSetChanged()
                 Toast.makeText(context, "Event deleted successfully", Toast.LENGTH_SHORT).show()

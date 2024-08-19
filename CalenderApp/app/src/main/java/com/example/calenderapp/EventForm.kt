@@ -113,7 +113,7 @@ class EventForm : AppCompatActivity() {
                 binding.etEndTimeP2.text.toString().toInt() > 59
     }
 
-    private fun getDaysOfWeek(): List<DayOfWeek>{
+    private fun getDaysOfWeek(): List<DayOfWeek> {
         val daysSelected = binding.cgDaysChecked.checkedChipIds.map{
                 chipId ->
             binding.cgDaysChecked.findViewById<Chip>(chipId).text.toString()
@@ -169,9 +169,9 @@ class EventForm : AppCompatActivity() {
         val event = Event(id, title, daysSelected, startTime, endTime, location, des)
         val methodRes = let{
             if (method == "ADD")
-                EventRepository.addEvent(this,event)
+                EventRepository.addEvent(event)
             else
-                EventRepository.updateEvent(this, event)
+                EventRepository.updateEvent(event)
         }
 
         if(methodRes){
