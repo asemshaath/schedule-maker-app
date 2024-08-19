@@ -1,20 +1,25 @@
 package com.example.calenderapp
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.calenderapp.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
 import java.time.DayOfWeek
 import java.time.LocalTime
+import android.Manifest
+
 
 class MainActivity : AppCompatActivity() {
-
-//    1) create a list view
-//    2) In the list add a delete button to delete event
-//    3) Have an update functionality by either doing it in place or a new activity.
 
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityMainBinding
@@ -27,7 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         // Initialize adapter with events from repository
         eventAdapter = EventAdapter(this, EventRepository.getEventsForWeek())
-
         binding.eventListView.adapter = eventAdapter
 
         val logoutBtn = binding.logoutBtn
@@ -37,6 +41,9 @@ class MainActivity : AppCompatActivity() {
         eventAdapter.notifyDataSetChanged()
 
         auth = FirebaseAuth.getInstance()
+        createNotificationChannel()
+        requestNotificationPermission()
+
         val user = auth.currentUser
         Log.d("FIREBASE USERNAME FROM MAINACTIVITY", "${user?.email}")
 
@@ -45,8 +52,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+
         logoutBtn.setOnClickListener{logoutBtinClicked()}
-        modifyScheduleBtn.setOnClickListener{modBtnClicked()}
+        modifyScheduleBtn.setOnClickListener{
+            val intent = Intent(this, Notification::class.java)
+            intent.putExtra(titleExtra, "Test Notification")
+            intent.putExtra(messageExtra, "This is a test notification")
+            sendBroadcast(intent)
+
+            modBtnClicked()
+        }
 
     }
 
@@ -54,6 +70,19 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
         fetchEventsAndUpdateUI()
         eventAdapter.notifyDataSetChanged()
+    }
+
+
+    private fun createNotificationChannel() {
+        val name = "Event Reminders"
+        val descriptionText = "Channel for event reminder notifications"
+        val importance = NotificationManager.IMPORTANCE_DEFAULT
+        val channel = NotificationChannel("EVENT_REMINDER_CHANNEL", name, importance).apply {
+            description = descriptionText
+        }
+        val notificationManager: NotificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun modBtnClicked() {
@@ -70,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
     private fun fetchEventsAndUpdateUI() {
-        EventRepository.getEventsFromFirebase { events ->
+        EventRepository.getEventsFromFirebase(this) { events ->
             runOnUiThread {
                 if (events.isNotEmpty()) {
                     Log.d("MainActivity", "Retrieving Events From Firebase")
@@ -82,6 +111,16 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     Log.d("MainActivity", "No events found")
                 }
+            }
+        }
+    }
+
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
             }
         }
     }

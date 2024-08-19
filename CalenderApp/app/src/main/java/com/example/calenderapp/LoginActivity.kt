@@ -21,6 +21,12 @@ class LoginActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         val textView = binding.registerNow
 
+        if (auth.currentUser != null){
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         textView.setOnClickListener{registerNowClicked()}
 
         binding.loginBtn.setOnClickListener{loginBtnClicked()}
@@ -38,14 +44,12 @@ class LoginActivity : AppCompatActivity() {
         if (email.isEmpty()){
             Log.i("LOGIN_ACV", "Email is empty")
             Toast.makeText(this, "Email is empty", Toast.LENGTH_SHORT).show()
-
             return
         }
 
         if (passwd.isEmpty()){
             Log.i("LOGIN_ACV", "Password is empty")
             Toast.makeText(this, "Password is empty", Toast.LENGTH_SHORT).show()
-
             return
         }
 

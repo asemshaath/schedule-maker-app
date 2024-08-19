@@ -64,8 +64,13 @@ class EventAdapter(
         }
 
         binding.deleteButton.setOnClickListener {
-            EventRepository.deleteEvent(event)
-            notifyDataSetChanged()
+            if (EventRepository.deleteEvent(context, event)) {
+                events.remove(event)
+                notifyDataSetChanged()
+                Toast.makeText(context, "Event deleted successfully", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Failed to delete event", Toast.LENGTH_SHORT).show()
+            }
         }
 
         binding.root.setOnClickListener {
@@ -75,32 +80,6 @@ class EventAdapter(
         return binding.root
     }
 
-    private fun showUpdateDialog(event: Event) {
-        val dialogBinding = DialogUpdateEventBinding.inflate(LayoutInflater.from(context))
-
-        dialogBinding.titleEditText.setText(event.title)
-        dialogBinding.locationEditText.setText(event.location)
-        // Set other fields as necessary
-
-        AlertDialog.Builder(context)
-            .setTitle("Update Event")
-            .setView(dialogBinding.root)
-            .setPositiveButton("Update") { _, _ ->
-                // Update the event object
-                event.title = dialogBinding.titleEditText.text.toString()
-                event.location = dialogBinding.locationEditText.text.toString()
-                // Update other fields
-
-                if (EventRepository.doesOverlap(event)) {
-                    Toast.makeText(context, "Event overlaps with existing events", Toast.LENGTH_SHORT).show()
-                } else {
-                    EventRepository.updateEvent(event)
-                    notifyDataSetChanged()
-                }
-            }
-            .setNegativeButton("Cancel", null)
-            .show()
-    }
 
     private fun showDetailsDialog(event: Event) {
         AlertDialog.Builder(context)

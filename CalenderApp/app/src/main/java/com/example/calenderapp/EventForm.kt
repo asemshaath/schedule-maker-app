@@ -3,14 +3,16 @@ package com.example.calenderapp
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import com.example.calenderapp.databinding.ActivityEventFormBinding
 import com.google.android.material.chip.Chip
 import java.time.DayOfWeek
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import kotlin.random.Random
+
 
 class EventForm : AppCompatActivity() {
 
@@ -36,9 +38,18 @@ class EventForm : AppCompatActivity() {
             }
         }
 
+        binding.etStartTimeP1.addTextChangedListener { minuteChange(binding.etStartTimeP2) }
+        binding.etEndTimeP1.addTextChangedListener { minuteChange(binding.etEndTimeP2) }
 
-        addEventBtn.setOnClickListener {modifyRepo(eventId)}
+        addEventBtn.setOnClickListener{ modifyRepo(eventId) }
+
         viewSchBtn.setOnClickListener { viewSch() }
+    }
+
+    private fun minuteChange(minPlace: EditText) {
+        if(minPlace.text.isEmpty())
+            minPlace.setText("00")
+
     }
 
 
@@ -113,7 +124,7 @@ class EventForm : AppCompatActivity() {
         }
     }
 
-    private fun modifyRepo(eventId: Int?) {
+    private fun modifyRepo(eventId: Int?): Boolean {
         val title = binding.etTitle.text.toString()
         val des = binding.etDescribtion.text.toString()
         val location = binding.etLocation.text.toString()
@@ -125,12 +136,12 @@ class EventForm : AppCompatActivity() {
 
         if (title.isEmpty() || location.isEmpty() || isTimeEmpty() || daysSelected.isEmpty()) {
             Toast.makeText(this, "Title, location, or time might be empty!",Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
 
         if (isTimeValid()){
             Toast.makeText(this, "Enter a valid time in 12-hour format",Toast.LENGTH_SHORT).show()
-            return
+            return false
         }
 
         val formatter = DateTimeFormatter.ofPattern("h:mm a")
@@ -140,6 +151,11 @@ class EventForm : AppCompatActivity() {
 
         val startTime = LocalTime.parse(startTimeStr, formatter)
         val endTime = LocalTime.parse(endTimeStr, formatter)
+
+        if (startTime > endTime){
+            Toast.makeText(this, "Event cannot end before start time 😐",Toast.LENGTH_SHORT).show()
+            return false
+        }
 
         Log.d("TIME TEST", "Start Time User Input: $startTimeStr")
         Log.d("TIME TEST", "Start Time Localtime: $startTime")
@@ -153,21 +169,24 @@ class EventForm : AppCompatActivity() {
         val event = Event(id, title, daysSelected, startTime, endTime, location, des)
         val methodRes = let{
             if (method == "ADD")
-                EventRepository.addEvent(event)
+                EventRepository.addEvent(this,event)
             else
-                EventRepository.updateEvent(event)
+                EventRepository.updateEvent(this, event)
         }
 
         if(methodRes){
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             finish()
-        } else if (!methodRes && method == "ADD")
-            Toast.makeText(this, "Events Cannot Overlap",Toast.LENGTH_SHORT).show()
-        else
-            Toast.makeText(this, "Failed to update event",Toast.LENGTH_SHORT).show()
+        } else if (!methodRes && method == "ADD") {
+            Toast.makeText(this, "Events Cannot Overlap", Toast.LENGTH_SHORT).show()
+            return false
+        } else {
+            Toast.makeText(this, "Failed to update event", Toast.LENGTH_SHORT).show()
+            return false
+        }
 
-
+        return true
     }
 
 
