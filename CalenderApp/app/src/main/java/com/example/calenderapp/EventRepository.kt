@@ -51,7 +51,7 @@ object EventRepository {
             return
         }
 
-        db.collection("events").document(userId).collection("my_event")
+        db.collection("users").document(userId).collection("events")
             .get()
             .addOnSuccessListener { documents ->
                 val events = documents.mapNotNull { document ->
@@ -119,73 +119,82 @@ object EventRepository {
         return events
     }
 
-    fun addEvent(event: Event): Boolean {
-
-        if (doesOverlap(event)){
+    fun addEvent(event: Event, callback: (Boolean) -> Unit) {
+        if (doesOverlap(event)) {
             // cannot add the event
-            return false
+            callback(false)
+            return
         }
 
-        events.add(event)
         val auth = FirebaseAuth.getInstance()
-        val userId = auth.currentUser?.uid ?: return false
+        val userId = auth.currentUser?.uid ?: run {
+            callback(false)
+            return
+        }
 
-        db.collection("events").document(userId).collection("my_event")
+        db.collection("users").document(userId).collection("events")
             .document(event.id.toString())  // Use the event's ID as the document ID
-            .set(event)  // Use set() instead of add()
+            .set(event)
             .addOnSuccessListener {
                 Log.d("Firestore", "Event successfully added")
+                events.add(event)
+                callback(true)
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error adding event", e)
+                callback(false)
             }
-
-        return true // added event successfully
     }
 
-
-//    overlapping needs to be checked
-    fun updateEvent(event: Event): Boolean {
+    //    overlapping needs to be checked
+    fun updateEvent(event: Event, callback: (Boolean) -> Unit) {
         val index = events.indexOfFirst { it.id == event.id }
-        if (index != -1) {
-            events[index] = event
 
-            val auth = FirebaseAuth.getInstance()
-            val userId = auth.currentUser?.uid ?: return false
-
-            db.collection("events").document(userId).collection("my_event")
-                .document(event.id.toString())  // Use the event's ID as the document ID
-                .set(event)  // Use set() instead of add()
-                .addOnSuccessListener {
-                    Log.d("Firestore", "Event successfully updated")
-                }
-                .addOnFailureListener { e ->
-                    Log.w("Firestore", "Error updating event", e)
-                }
-
-            return true
+        if (index == -1) {
+            callback(false)
+            return
         }
-        return false
-    }
-
-    fun deleteEvent(event: Event): Boolean {
 
         val auth = FirebaseAuth.getInstance()
-        val userId = auth.currentUser?.uid ?: return false
+        val userId = auth.currentUser?.uid ?: run {
+            callback(false)
+            return
+        }
 
-        db.collection("events").document(userId).collection("my_event")
+        db.collection("users").document(userId).collection("events")
             .document(event.id.toString())  // Use the event's ID as the document ID
-            .delete()  // Use set() instead of add()
+            .set(event)  // Use set() instead of add()
+            .addOnSuccessListener {
+                Log.d("Firestore", "Event successfully updated")
+                events[index] = event
+                callback(true)
+            }
+            .addOnFailureListener { e ->
+                Log.w("Firestore", "Error updating event", e)
+                callback(false)
+            }
+    }
+
+
+    fun deleteEvent(event: Event, callback: (Boolean) -> Unit) {
+        val auth = FirebaseAuth.getInstance()
+        val userId = auth.currentUser?.uid ?: run {
+            callback(false)
+            return
+        }
+
+        db.collection("users").document(userId).collection("events")
+            .document(event.id.toString())  // Use the event's ID as the document ID
+            .delete()
             .addOnSuccessListener {
                 Log.d("Firestore", "Event successfully deleted")
+                events.remove(event)
+                callback(true)
             }
             .addOnFailureListener { e ->
                 Log.w("Firestore", "Error deleting event", e)
+                callback(false)
             }
-
-        events.remove(event)
-
-        return true
     }
 
 

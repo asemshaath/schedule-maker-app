@@ -64,13 +64,21 @@ class EventAdapter(
         }
 
         binding.deleteButton.setOnClickListener {
-            if (EventRepository.deleteEvent(event)) {
-                events.remove(event)
-                notifyDataSetChanged()
-                Toast.makeText(context, "Event deleted successfully", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Failed to delete event", Toast.LENGTH_SHORT).show()
+
+            EventRepository.deleteEvent(event) { success ->
+                if (success) {
+                    // Event was deleted successfully
+                    events.remove(event)
+                    notifyDataSetChanged()
+                    Toast.makeText(context, "Event deleted successfully", Toast.LENGTH_SHORT).show()
+
+                } else {
+                    // Failed to delete event
+                    Toast.makeText(context, "Failed to delete event", Toast.LENGTH_SHORT).show()
+
+                }
             }
+
         }
 
         binding.root.setOnClickListener {

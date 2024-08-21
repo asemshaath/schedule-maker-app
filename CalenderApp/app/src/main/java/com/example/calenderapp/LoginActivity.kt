@@ -1,5 +1,6 @@
 package com.example.calenderapp
 
+import android.content.ContentValues
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.calenderapp.databinding.ActivityLoginBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import java.time.ZoneId
 
 class LoginActivity : AppCompatActivity() {
 
@@ -58,9 +61,29 @@ class LoginActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d("FIREBASE", "signInWithEmail:success")
-                    val intentToMainActvity = Intent(this, MainActivity::class.java)
-                    startActivity(intentToMainActvity)
-                    finish()
+
+                    val userId = auth.currentUser?.uid
+                    val userData = hashMapOf(
+                        "fcmToken" to "random-number1072023545446565641",
+                        "email" to email,
+                        "timezone" to ZoneId.systemDefault().id
+                    )
+
+                    userId?.let {
+                        FirebaseFirestore.getInstance().collection("users").document(it).set(userData)
+                            .addOnSuccessListener {
+                                Log.d(ContentValues.TAG, "Signed Up Successfully!")
+                                Toast.makeText(this, "Signed Up Successfully", Toast.LENGTH_SHORT).show()
+
+                                val intentToMainActvity = Intent(this, MainActivity::class.java)
+                                startActivity(intentToMainActvity)
+                                finish()
+
+                            }
+                            .addOnFailureListener { e -> Log.w(ContentValues.TAG, "Error writing document signing up", e) }
+                    }
+
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w("FIREBASE", "signInWithEmail:failure", task.exception)

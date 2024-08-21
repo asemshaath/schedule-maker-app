@@ -1,0 +1,12 @@
+{
+  "projects": {
+    "default": "calendarapp-c842f"
+  },
+  "targets": {},
+  "etags": {
+    "calendarapp-c842f": {
+      "extensionInstances": {}
+    }
+  },
+  "dataconnectEmulatorConfig": {}
+}

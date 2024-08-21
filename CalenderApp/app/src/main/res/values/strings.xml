@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">CalenderApp</string>
+    <string name="app_name">OrganizeIt</string>
+    <string name="msg_token_fmt">qqqqq</string>
 </resources>

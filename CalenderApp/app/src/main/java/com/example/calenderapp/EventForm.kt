@@ -124,7 +124,7 @@ class EventForm : AppCompatActivity() {
         }
     }
 
-    private fun modifyRepo(eventId: Int?): Boolean {
+    private fun modifyRepo(eventId: Int?) {
         val title = binding.etTitle.text.toString()
         val des = binding.etDescribtion.text.toString()
         val location = binding.etLocation.text.toString()
@@ -135,13 +135,13 @@ class EventForm : AppCompatActivity() {
         Log.i("TEST ADD EVENT", daysSelected.toString())
 
         if (title.isEmpty() || location.isEmpty() || isTimeEmpty() || daysSelected.isEmpty()) {
-            Toast.makeText(this, "Title, location, or time might be empty!",Toast.LENGTH_SHORT).show()
-            return false
+            Toast.makeText(this, "Title, location, or time might be empty!", Toast.LENGTH_SHORT).show()
+            return
         }
 
         if (isTimeValid()){
-            Toast.makeText(this, "Enter a valid time in 12-hour format",Toast.LENGTH_SHORT).show()
-            return false
+            Toast.makeText(this, "Enter a valid time in 12-hour format", Toast.LENGTH_SHORT).show()
+            return
         }
 
         val formatter = DateTimeFormatter.ofPattern("h:mm a")
@@ -154,7 +154,7 @@ class EventForm : AppCompatActivity() {
 
         if (startTime > endTime){
             Toast.makeText(this, "Event cannot end before start time 😐",Toast.LENGTH_SHORT).show()
-            return false
+            return
         }
 
         Log.d("TIME TEST", "Start Time User Input: $startTimeStr")
@@ -167,26 +167,47 @@ class EventForm : AppCompatActivity() {
 
         // new event
         val event = Event(id, title, daysSelected, startTime, endTime, location, des)
-        val methodRes = let{
-            if (method == "ADD")
-                EventRepository.addEvent(event)
-            else
-                EventRepository.updateEvent(event)
+
+        performEventOperation(method, event) { success ->
+            if (success) {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+
+            } else {
+                if (method == "ADD") {
+                    Toast.makeText(this, "Events Cannot Overlap", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(this, "Failed to update event", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
-        if(methodRes){
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else if (!methodRes && method == "ADD") {
-            Toast.makeText(this, "Events Cannot Overlap", Toast.LENGTH_SHORT).show()
-            return false
-        } else {
-            Toast.makeText(this, "Failed to update event", Toast.LENGTH_SHORT).show()
-            return false
-        }
+//        if(methodRes){
+//            val intent = Intent(this, MainActivity::class.java)
+//            startActivity(intent)
+//            finish()
+//        } else if (!methodRes && method == "ADD") {
+//            Toast.makeText(this, "Events Cannot Overlap", Toast.LENGTH_SHORT).show()
+//            return false
+//        } else {
+//            Toast.makeText(this, "Failed to update event", Toast.LENGTH_SHORT).show()
+//            return false
+//        }
+//
+//        return true
+    }
 
-        return true
+    fun performEventOperation(method: String, event: Event, callback: (Boolean) -> Unit) {
+        when (method) {
+            "ADD" -> EventRepository.addEvent(event) { success ->
+                callback(success)
+            }
+            "UPDATE" -> EventRepository.updateEvent(event) { success ->
+                callback(success)
+            }
+            else -> callback(false) // Invalid method
+        }
     }
 
 

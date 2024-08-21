@@ -10,6 +10,8 @@ import android.view.View
 import java.time.DayOfWeek
 import java.time.LocalTime
 
+
+// Not used right now
 class WeeklyCalendarView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG)

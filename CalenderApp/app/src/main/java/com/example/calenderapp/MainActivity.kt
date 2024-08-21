@@ -17,6 +17,11 @@ import com.google.firebase.auth.FirebaseAuth
 import java.time.DayOfWeek
 import java.time.LocalTime
 import android.Manifest
+import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
+import android.widget.Toast
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         eventAdapter.notifyDataSetChanged()
 
         auth = FirebaseAuth.getInstance()
-        createNotificationChannel()
+//        createNotificationChannel()
         requestNotificationPermission()
 
         val user = auth.currentUser
@@ -59,6 +64,52 @@ class MainActivity : AppCompatActivity() {
             modBtnClicked()
         }
 
+        // Get FCM token
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+//                return@addOnCompleteListener
+//            }
+//
+//            // Get new FCM registration token
+//            val token = task.result
+//
+//            // Log and toast
+//            val msg = getString(R.string.msg_token_fmt, token)
+//            Log.d(TAG, msg)
+//            Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
+//        }
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@addOnCompleteListener
+            }
+
+            // Get new FCM registration token
+            val token = task.result
+
+            // Log the token (for debugging purposes)
+            Log.d(TAG, "FCM Token: $token")
+
+            // Send the token to your server
+            sendRegistrationToServer(token)
+        }
+    }
+
+    private fun sendRegistrationToServer(token: String) {
+        // TODO: Implement this method to send token to your app server.
+        // This is where you would typically send the token to your own server
+        // or save it in Firebase Firestore.
+
+        // For example, if using Firestore:
+        val user = FirebaseAuth.getInstance().currentUser
+        user?.let {
+            val userDocRef = FirebaseFirestore.getInstance().collection("users").document(it.uid)
+            userDocRef.update("fcmToken", token)
+                .addOnSuccessListener { Log.d(TAG, "FCM Token successfully updated $token") }
+                .addOnFailureListener { e -> Log.w(TAG, "Error updating FCM token $token", e) }
+        }
     }
 
     override fun onResume() {
@@ -68,17 +119,17 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun createNotificationChannel() {
-        val name = "Event Reminders"
-        val descriptionText = "Channel for event reminder notifications"
-        val importance = NotificationManager.IMPORTANCE_DEFAULT
-        val channel = NotificationChannel("EVENT_REMINDER_CHANNEL", name, importance).apply {
-            description = descriptionText
-        }
-        val notificationManager: NotificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
-    }
+//    private fun createNotificationChannel() {
+//        val name = "Event Reminders"
+//        val descriptionText = "Channel for event reminder notifications"
+//        val importance = NotificationManager.IMPORTANCE_DEFAULT
+//        val channel = NotificationChannel("EVENT_REMINDER_CHANNEL", name, importance).apply {
+//            description = descriptionText
+//        }
+//        val notificationManager: NotificationManager =
+//            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+//        notificationManager.createNotificationChannel(channel)
+//    }
 
     private fun modBtnClicked() {
         val intent = Intent(applicationContext, EventForm::class.java)
