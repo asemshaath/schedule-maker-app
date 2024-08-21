@@ -13,4 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
-/CalenderApp/app/google-services.json
+**/google-services.json
